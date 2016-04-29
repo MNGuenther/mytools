@@ -2,7 +2,13 @@
 """
 Created on Sun Mar 13 21:18:27 2016
 
-@author: mx
+@author:
+Maximilian N. Guenther
+Battcock Centre for Experimental Astrophysics,
+Cavendish Laboratory,
+JJ Thomson Avenue
+Cambridge CB3 0HE
+Email: mg719@cam.ac.uk
 """
 
 import numpy as np

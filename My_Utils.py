@@ -2,7 +2,13 @@
 """
 Created on Tue Apr  5 15:07:00 2016
 
-@author: mx
+@author:
+Maximilian N. Guenther
+Battcock Centre for Experimental Astrophysics,
+Cavendish Laboratory,
+JJ Thomson Avenue
+Cambridge CB3 0HE
+Email: mg719@cam.ac.uk
 """
 
 import numpy as np
@@ -35,3 +41,15 @@ def version_control(files='*.py', printing=True):
     #    print "# Last created script: %s, %s" % ( last_created_file, time.ctime(os.path.getmtime(last_created_file)) )
     #    print "# Last updated script: %s, %s" % ( last_updated_file, time.ctime(os.path.getmtime(last_updated_file)) )
         print "# Last update: %s" % time.ctime(os.path.getmtime(last_updated_file))
+        
+        
+        
+def table_view(dic):
+    from astropy.table import Table 
+    dic_table = {}
+    subkeys = ['OBJ_ID', 'SYSREM_FLUX3_median', 'PERIOD', 'DEPTH', 'WIDTH', 'NUM_TRANSITS']
+    for key in subkeys:
+            dic_table[key] = dic[key]
+    dic_table = Table(dic_table)
+    dic_table = dic_table[subkeys]
+    print dic_table
