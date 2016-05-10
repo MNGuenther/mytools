@@ -13,8 +13,10 @@ Email: mg719@cam.ac.uk
 
 import numpy as np
 from scipy import stats
+import pandas as pd
 import time
 import os, glob
+from running_median import RunningMedian
 #from mpl_toolkits.axes_grid1 import AxesGrid
 
         
@@ -24,6 +26,54 @@ def medsig(a):
     med = stats.nanmedian(a)
     sig = 1.48 * stats.nanmedian(abs(a-med))
     return med, sig   
+    
+  
+  
+def running_mean(x, N):
+    cumsum = np.cumsum(np.insert(x, 0, 0)) 
+    return (cumsum[N:] - cumsum[:-N]) / N 
+    
+    
+# 'running_median' DOES NOT AGREE WITH THE PANDAS IMPLEMENTATION 'running_median_pandas'
+#def running_median(x, N):
+#    return np.array(list(RunningMedian(N, x)))
+    
+    
+def running_mean_pandas(x, N):
+    ts = pd.Series(x).rolling(window=N, center=False).mean()
+    return ts[~np.isnan(ts)].as_matrix()
+
+
+
+def running_median_pandas(x, N):
+    ts = pd.Series(x).rolling(window=N, center=False).median()
+    return ts[~np.isnan(ts)].as_matrix()
+
+
+    
+def mask_ranges(x, x_min, x_max):
+    """"
+    Crop out values and indices out of an array x for multiple given ranges x_min to x_max.
+    
+    Input:
+    x: array, 
+    x_min: lower limits of the ranges
+    x_max: upper limits of the ranges
+    
+    Output:
+    
+    
+    Example:
+    x = np.arange(200)    
+    x_min = [5, 25, 90]
+    x_max = [10, 35, 110]
+    """
+
+    mask = np.zeros(len(x), dtype=bool)
+    for i in range(3): mask = mask | ((x >= x_min[i]) & (x <= x_max[i]))
+    ind_mask = np.arange(len(mask))[mask]
+    
+    return x[mask], ind_mask, mask 
     
     
 
