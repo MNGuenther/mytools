@@ -13,12 +13,14 @@ Email: mg719@cam.ac.uk
 
 import numpy as np
 from scipy import stats
-import pandas as pd
 import time
 import os, glob
-from running_median import RunningMedian
+#from running_median import RunningMedian
 #from mpl_toolkits.axes_grid1 import AxesGrid
-
+try:
+    import pandas as pd
+except ImportError:
+    'Warning: module "pandas" not installed.'
         
         
 def medsig(a):
