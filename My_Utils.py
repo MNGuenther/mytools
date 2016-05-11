@@ -32,8 +32,9 @@ def medsig(a):
   
   
 def running_mean(x, N):
-    cumsum = np.cumsum(np.insert(x, 0, 0)) 
-    return (cumsum[N:] - cumsum[:-N]) / N 
+    x[np.isnan(x)] = 0. #reset NAN to 0 to calculate the cumulative sum; mimics the 'pandas' behavior
+    cumsum = np.cumsum(np.insert(x, 0., 0.)) 
+    return 1.*(cumsum[N:] - cumsum[:-N]) / N 
     
     
 # 'running_median' DOES NOT AGREE WITH THE PANDAS IMPLEMENTATION 'running_median_pandas'
@@ -72,7 +73,8 @@ def mask_ranges(x, x_min, x_max):
     """
 
     mask = np.zeros(len(x), dtype=bool)
-    for i in range(3): mask = mask | ((x >= x_min[i]) & (x <= x_max[i]))
+    for i in range(len(x_min)): 
+        mask = mask | ((x >= x_min[i]) & (x <= x_max[i]))
     ind_mask = np.arange(len(mask))[mask]
     
     return x[mask], ind_mask, mask 
