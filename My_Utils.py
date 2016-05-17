@@ -96,6 +96,12 @@ def version_control(files='*.py', printing=True):
     #    print "# Last updated script: %s, %s" % ( last_updated_file, time.ctime(os.path.getmtime(last_updated_file)) )
         print "# Last update: %s" % time.ctime(os.path.getmtime(last_updated_file))
         
+
+def merge_two_dicts(x, y):
+    '''Given two dicts, merge them into a new dict as a shallow copy.'''
+    z = x.copy()
+    z.update(y)
+    return z
         
         
 def table_view(dic):
