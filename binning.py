@@ -13,7 +13,7 @@ Email: mg719@cam.ac.uk
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import stats
+#from scipy import stats #needed for stats.nanmean/median on ngtshead
 
 
 
@@ -31,14 +31,14 @@ def binning1D(arr, bin_width, setting='mean', normalize=False):
     bin_width = int(bin_width)
     if setting=='mean':
         for nn in range(N_bins):
-            binarr[nn] = stats.nanmean(arr[nn*bin_width:(nn+1)*bin_width])
-            binarr_err[nn] = stats.nanstd(arr[nn*bin_width:(nn+1)*bin_width])
+            binarr[nn] = np.nanmean(arr[nn*bin_width:(nn+1)*bin_width])
+            binarr_err[nn] = np.nanstd(arr[nn*bin_width:(nn+1)*bin_width])
     if setting=='median':
         for nn in range(N_bins):
-            binarr[nn] = stats.nanmedian(arr[nn*bin_width:(nn+1)*bin_width])
-            binarr_err[nn] = 1.48 * stats.nanmedian(abs(arr[nn*bin_width:(nn+1)*bin_width] - binarr[nn]))
+            binarr[nn] = np.nanmedian(arr[nn*bin_width:(nn+1)*bin_width])
+            binarr_err[nn] = 1.48 * np.nanmedian(abs(arr[nn*bin_width:(nn+1)*bin_width] - binarr[nn]))
     if normalize==True:
-        med = stats.nanmedian(binarr)
+        med = np.nanmedian(binarr)
         binarr /= med
         binarr_err /= med
         
@@ -62,14 +62,14 @@ def binning2D(arr, bin_width, setting='mean', normalize=False, axis=1):
     bin_width = int(bin_width)
     if setting=='mean':
         for nn in range(N_bins):
-            binarr[:,nn] = stats.nanmean(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
-            binarr_err[:,nn] = stats.nanstd(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
+            binarr[:,nn] = np.nanmean(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
+            binarr_err[:,nn] = np.nanstd(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
     if setting=='median':
         for nn in range(N_bins):
-            binarr[:,nn] = stats.nanmedian(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
-            binarr_err[:,nn] = 1.48 * stats.nanmedian(abs(arr[:,nn*bin_width:(nn+1)*bin_width] - binarr[:,nn]))
+            binarr[:,nn] = np.nanmedian(arr[:,nn*bin_width:(nn+1)*bin_width], axis=axis)
+            binarr_err[:,nn] = 1.48 * np.nanmedian(abs(arr[:,nn*bin_width:(nn+1)*bin_width] - binarr[:,nn]))
     if normalize==True:
-        med = stats.nanmedian(binarr)
+        med = np.nanmedian(binarr)
         binarr /= med
         binarr_err /= med
         
@@ -125,17 +125,17 @@ def binning1D_per_night(time, arr, bin_width, timegap=3600, setting='mean', norm
     
     if setting=='mean':
         for nn in range(N_bins):
-            bintime[nn] = stats.nanmean( time[first_ind[nn]:last_ind[nn]] )
-            binarr[nn] = stats.nanmean( arr[first_ind[nn]:last_ind[nn]] )
-            binarr_err[nn] = stats.nanstd( arr[first_ind[nn]:last_ind[nn]] )
+            bintime[nn] = np.nanmean( time[first_ind[nn]:last_ind[nn]] )
+            binarr[nn] = np.nanmean( arr[first_ind[nn]:last_ind[nn]] )
+            binarr_err[nn] = np.nanstd( arr[first_ind[nn]:last_ind[nn]] )
     elif setting=='median':
         for nn in range(N_bins):
-            bintime[nn] = stats.nanmedian( time[first_ind[nn]:last_ind[nn]] )
-            binarr[nn] = stats.nanmedian( arr[first_ind[nn]:last_ind[nn]] )
-            binarr_err[nn] = 1.48 * stats.nanmedian( abs(arr[first_ind[nn]:last_ind[nn]] - binarr[nn]) )
+            bintime[nn] = np.nanmedian( time[first_ind[nn]:last_ind[nn]] )
+            binarr[nn] = np.nanmedian( arr[first_ind[nn]:last_ind[nn]] )
+            binarr_err[nn] = 1.48 * np.nanmedian( abs(arr[first_ind[nn]:last_ind[nn]] - binarr[nn]) )
     
     if normalize==True:
-        med = stats.nanmedian(binarr)
+        med = np.nanmedian(binarr)
         binarr /= med
         binarr_err /= med
             
@@ -159,17 +159,17 @@ def binning2D_per_night(time, arr, bin_width, timegap=3600, setting='mean', norm
     
     if setting=='mean':
         for nn in range(N_bins):
-            bintime[:,nn] = stats.nanmean( time[:,first_ind[nn]:last_ind[nn]], axis=axis )
-            binarr[:,nn] = stats.nanmean( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
-            binarr_err[:,nn] = stats.nanstd( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
+            bintime[:,nn] = np.nanmean( time[:,first_ind[nn]:last_ind[nn]], axis=axis )
+            binarr[:,nn] = np.nanmean( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
+            binarr_err[:,nn] = np.nanstd( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
     elif setting=='median':
         for nn in range(N_bins):
-            bintime[:,nn] = stats.nanmedian( time[:,first_ind[nn]:last_ind[nn]], axis=axis )
-            binarr[:,nn] = stats.nanmedian( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
-            binarr_err[:,nn] = 1.48 * stats.nanmedian( abs(arr[:,first_ind[nn]:last_ind[nn]] - binarr[:,nn]) )
+            bintime[:,nn] = np.nanmedian( time[:,first_ind[nn]:last_ind[nn]], axis=axis )
+            binarr[:,nn] = np.nanmedian( arr[:,first_ind[nn]:last_ind[nn]], axis=axis )
+            binarr_err[:,nn] = 1.48 * np.nanmedian( abs(arr[:,first_ind[nn]:last_ind[nn]] - binarr[:,nn]) )
     
     if normalize==True:
-        med = stats.nanmedian(binarr)
+        med = np.nanmedian(binarr)
         binarr /= med
         binarr_err /= med
             
@@ -200,9 +200,9 @@ def binning1D_per_night_list(time, arr, bin_width, timegap=3600, setting='mean',
                 last_ind = ind_end_of_night[i]
                 i += 1
                 
-            bintime.append( stats.nanmean( time[first_ind:last_ind] ) )
-            binarr.append( stats.nanmean( arr[first_ind:last_ind] ) )
-            binarr_err.append( stats.nanstd(arr[first_ind:last_ind]) )
+            bintime.append( np.nanmean( time[first_ind:last_ind] ) )
+            binarr.append( np.nanmean( arr[first_ind:last_ind] ) )
+            binarr_err.append( np.nanstd(arr[first_ind:last_ind]) )
             first_ind = last_ind + 1
             
     elif setting=='median':       
@@ -213,9 +213,9 @@ def binning1D_per_night_list(time, arr, bin_width, timegap=3600, setting='mean',
                 last_ind = ind_end_of_night[i]
                 i += 1
                 
-            bintime.append( stats.nanmedian( time[first_ind:last_ind] ) )
-            binarr.append( stats.nanmedian( arr[first_ind:last_ind] ) )
-            binarr_err.append( 1.48 * stats.nanmedian(abs( arr[first_ind:last_ind] - binarr[-1])) )
+            bintime.append( np.nanmedian( time[first_ind:last_ind] ) )
+            binarr.append( np.nanmedian( arr[first_ind:last_ind] ) )
+            binarr_err.append( 1.48 * np.nanmedian(abs( arr[first_ind:last_ind] - binarr[-1])) )
             first_ind = last_ind
 
     bintime = np.array(bintime)
@@ -223,7 +223,7 @@ def binning1D_per_night_list(time, arr, bin_width, timegap=3600, setting='mean',
     binarr_err = np.array(binarr_err)
     
     if normalize==True:
-        med = stats.nanmedian(binarr)
+        med = np.nanmedian(binarr)
         binarr /= med
         binarr_err /= med
         
