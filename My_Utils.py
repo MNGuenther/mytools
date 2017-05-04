@@ -12,7 +12,7 @@ Email: mg719@cam.ac.uk
 """
 
 import numpy as np
-from scipy import stats
+#from scipy import stats
 import time
 import os, glob
 #from running_median import RunningMedian
@@ -25,14 +25,14 @@ except ImportError:
         
 def medsig(a):
     '''Compute median and MAD-estimated scatter of array a'''
-    try:
-        med = np.nanmedian(a)
-        sig = 1.48 * np.nanmedian(abs(a-med))
-    except:
-        AttributeError
-    else:
-        med = stats.nanmedian(a)
-        sig = 1.48 * stats.nanmedian(abs(a-med))
+#    try:
+    med = np.nanmedian(a)
+    sig = 1.48 * np.nanmedian(abs(a-med))
+#    except:
+#        AttributeError
+#    else:
+#        med = stats.nanmedian(a)
+#        sig = 1.48 * stats.nanmedian(abs(a-med))
     return med, sig   
     
   

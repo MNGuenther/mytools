@@ -115,25 +115,33 @@ def bin_edge_indices(time1D, bin_width, timegap, N_time):
 
 def binning1D_per_night(time, arr, bin_width, timegap=3600, setting='mean', normalize=False):
     """ If time and arr are 1D arrays """
+    
     N_time = len(arr)
     bin_width = int(bin_width)
     
     first_ind, last_ind = bin_edge_indices(time, bin_width, timegap, N_time)
     
     N_bins = len(first_ind)
-    bintime, binarr, binarr_err = np.zeros((3,N_bins))
+    bintime, binarr, binarr_err = np.zeros((3,N_bins)) * np.nan
     
     if setting=='mean':
         for nn in range(N_bins):
-            bintime[nn] = np.nanmean( time[first_ind[nn]:last_ind[nn]] )
-            binarr[nn] = np.nanmean( arr[first_ind[nn]:last_ind[nn]] )
-            binarr_err[nn] = np.nanstd( arr[first_ind[nn]:last_ind[nn]] )
+            #skip no/single data points
+            if last_ind[nn] > first_ind[nn]:
+                bintime[nn] = np.nanmean( time[first_ind[nn]:last_ind[nn]] )
+                #skip All-NAN slices (i.e. where all flux data is masked)
+                if ( np.isnan(arr[first_ind[nn]:last_ind[nn]]).all() == False ):
+                    binarr[nn] = np.nanmean( arr[first_ind[nn]:last_ind[nn]] )
+                    binarr_err[nn] = np.nanstd( arr[first_ind[nn]:last_ind[nn]] )
     elif setting=='median':
         for nn in range(N_bins):
-            bintime[nn] = np.nanmedian( time[first_ind[nn]:last_ind[nn]] )
-            binarr[nn] = np.nanmedian( arr[first_ind[nn]:last_ind[nn]] )
-            binarr_err[nn] = 1.48 * np.nanmedian( abs(arr[first_ind[nn]:last_ind[nn]] - binarr[nn]) )
-    
+            #skip no/single data points
+            if (last_ind[nn] > first_ind[nn]): 
+                bintime[nn] = np.nanmedian( time[first_ind[nn]:last_ind[nn]] )
+                #skip All-NAN slices (i.e. where all flux data is masked)
+                if ( np.isnan(arr[first_ind[nn]:last_ind[nn]]).all() == False ):
+                    binarr[nn] = np.nanmedian( arr[first_ind[nn]:last_ind[nn]] )
+                    binarr_err[nn] = 1.48 * np.nanmedian( abs(arr[first_ind[nn]:last_ind[nn]] - binarr[nn]) )
     if normalize==True:
         med = np.nanmedian(binarr)
         binarr /= med
