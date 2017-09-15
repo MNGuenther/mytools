@@ -11,28 +11,23 @@ Cambridge CB3 0HE
 Email: mg719@cam.ac.uk
 """
 
+import os, glob, time
 import numpy as np
-#from scipy import stats
-import time
-import os, glob
-#from running_median import RunningMedian
-#from mpl_toolkits.axes_grid1 import AxesGrid
-try:
-    import pandas as pd
-except ImportError:
-    'Warning: module "pandas" not installed.'
-        
+from astropy.coordinates import SkyCoord
+import astropy.units as u
+import pandas as pd
+
+
+
+###########################################################################
+#::: Statistics and time series helpers
+###########################################################################
+
         
 def medsig(a):
     '''Compute median and MAD-estimated scatter of array a'''
-#    try:
     med = np.nanmedian(a)
     sig = 1.48 * np.nanmedian(abs(a-med))
-#    except:
-#        AttributeError
-#    else:
-#        med = stats.nanmedian(a)
-#        sig = 1.48 * stats.nanmedian(abs(a-med))
     return med, sig   
     
   
@@ -42,11 +37,13 @@ def running_mean(x, N):
     cumsum = np.cumsum(np.insert(x, 0., 0.)) 
     return 1.*(cumsum[N:] - cumsum[:-N]) / N 
     
-    
+
+
 # 'running_median' DOES NOT AGREE WITH THE PANDAS IMPLEMENTATION 'running_median_pandas'
 #def running_median(x, N):
 #    return np.array(list(RunningMedian(N, x)))
-    
+
+
     
 def running_mean_pandas(x, N):
     ts = pd.Series(x).rolling(window=N, center=False).mean()
@@ -84,15 +81,60 @@ def mask_ranges(x, x_min, x_max):
     ind_mask = np.arange(len(mask))[mask]
     
     return x[mask], ind_mask, mask 
-    
-    
+
+
+
+
+###########################################################################
+#::: Text formatting for tables and plots
+###########################################################################
+
+
 
 def mystr(x,digits=0):
     if np.isnan(x): return '.'
     elif digits==0: return str(int(round(x,digits)))
     else: return str(round(x,digits))
-    
-    
+
+
+
+def format_2sigdigits(x1, x2, x3, nmax=3):
+    n = int( np.max( [ -np.floor(np.log10(np.abs(x))) for x in [x1, x2, x3] ] ) + 1 )
+    scaling = 0
+    extra = None
+    if n > nmax:
+        scaling = n-1
+        n = 1
+        extra = r"\cdot 10^{" + str(-scaling) + r"}"
+    return str(round(x1*10**scaling, n)).ljust(n+2, '0'), str(round(x2*10**scaling, n)).ljust(n+2, '0'), str(round(x3*10**scaling, n)).ljust(n+2, '0'), extra
+
+
+
+def deg2hmsdms(ra, dec):
+    c = SkyCoord(ra=ra * u.degree, dec=dec * u.degree, frame='icrs')
+    return c.to_string('hmsdms', precision=2, sep=':')
+
+
+
+def format_latex(x1, x2, x3, nmax=3):
+    r, l, u, extra = format_2sigdigits(x1, x2, x3, nmax)
+    if l==u:
+        core = r + r"\pm" + l
+    else:
+        core = r + r"^{+" + l + r"}_{-" + u + r"}"
+
+    if extra is None:
+        return r"$" + core + r"$"
+    else:
+        return r"$" + '(' + core + ')' + extra + r"$"
+
+
+
+
+###########################################################################
+#::: Version control
+###########################################################################
+
 
 def version_control(files='*.py', printing=True):
     #    last_created_file = max(glob.iglob(files), key=os.path.getctime)
@@ -101,7 +143,13 @@ def version_control(files='*.py', printing=True):
     #    print "# Last created script: %s, %s" % ( last_created_file, time.ctime(os.path.getmtime(last_created_file)) )
     #    print "# Last updated script: %s, %s" % ( last_updated_file, time.ctime(os.path.getmtime(last_updated_file)) )
         print "# Last update: %s" % time.ctime(os.path.getmtime(last_updated_file))
-        
+
+
+
+###########################################################################
+#::: Dictionaries and tables
+###########################################################################
+
 
 def merge_two_dicts(x, y):
     '''Given two dicts, merge them into a new dict as a shallow copy.'''

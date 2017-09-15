@@ -12,8 +12,8 @@ Email: mg719@cam.ac.uk
 """
 
 import numpy as np
-#import matplotlib.pyplot as plt
-from My_Utils import medsig
+from utils import medsig
+
 
 
 def rebin_err(t, f, ferr=None, dt = 0.02, ferr_type='medsig', ferr_style='std'):

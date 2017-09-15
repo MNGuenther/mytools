@@ -14,7 +14,20 @@ Email: mg719@cam.ac.uk
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-#from mpl_toolkits.axes_grid1 import AxesGrid
+
+
+
+
+###########################################################################
+#::: plotting helpers
+###########################################################################
+
+
+def norm_scatter(ax, x, y, c, rasterized=True, label='', cmap='jet', norm_x=True, norm_y=True, vmin=None, vmax=None, lw=None ):
+    if norm_x==True: x = x - np.nanmean(x)
+    if norm_y==True: y = y - np.nanmean(y)
+    sc = ax.scatter(x, y, c=c, cmap=cmap, vmin=vmin, vmax=vmax, rasterized=True, label=label, lw=lw)
+    return ax, sc
 
 
 
